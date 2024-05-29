@@ -1,28 +1,170 @@
+﻿using Billycock_MS_Reusable.DTO.Common;
+using Billycock_MS_Reusable.DTO.Utils;
+using Billycock_MS_Reusable.Models.Utils;
+using Billycock_MS_Reusable.Repositories.Utils.Common;
+using Billycock_MS_Reusable.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using Microsoft.Data.SqlClient;
+using System.Text.Json;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using System.Data.SqlClient;
 
-namespace Carga_Prueba_BI.Controllers
+namespace Billycock_MS_Reusable.Controllers
 {
-    [ApiController]
     [Route("[controller]")]
-    public class PruebaController : ControllerBase
+    [ApiController]
+    public class CommonController : ControllerBase
     {
-
-        private readonly ILogger<PruebaController> _logger;
-
-        public PruebaController(ILogger<PruebaController> logger)
+        private readonly ICommonRepository _commonRepository;
+        public CommonController(ICommonRepository commonRepository)
         {
-            _logger = logger;
+            _commonRepository = commonRepository;
         }
 
-        [HttpGet(Name = "Prueba")]
+        //[HttpGet]
+        //[Route(TransactionalProcess.ONLINE)]
+        //public async Task<IActionResult> Online()
+        //{
+        //    return Ok(new General<string>()
+        //    {
+        //        Object = "SERVICIO " + Globals.tipo + " " + TransactionalProcess.ONLINE,
+        //        Success = true
+        //    });
+        //}
+
+
+
+        //[HttpPost]
+        //[Authorize]
+        //[Route("InsertObject")]
+        //public async Task<General<string>> InsertObjectCommon(GeneralClass<object> objeto)
+        //{
+        //    try
+        //    {
+        //        return await _commonRepository.InsertObject(objeto);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //#region "Sección de Error"
+        //        string resource = MethodBase.GetCurrentMethod().DeclaringType.Name.Substring(MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf("<") + 1, MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf(">") - 1);
+        //        string Body = JsonConvert.SerializeObject(objeto);
+
+        //        await _commonRepository.RegisterException(new RegisterExceptionRequest() { ex = JsonConvert.SerializeObject(ex), method = resource, input = Body });
+        //        //#endregion
+        //        return new General<string>() { Errors = new List<string>() { ex.Message } };
+        //    }
+        //}
+
+        //[HttpPut]
+        //[Authorize]
+        //[Route("UpdateObject")]
+        //public async Task<General<string>> UpdateObjectCommon(GeneralClass<object> objeto)
+        //{
+        //    try
+        //    {
+        //        return await _commonRepository.UpdateObject(objeto);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //#region "Sección de Error"
+        //        string resource = MethodBase.GetCurrentMethod().DeclaringType.Name.Substring(MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf("<") + 1, MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf(">") - 1);
+        //        string Body = JsonConvert.SerializeObject(objeto);
+
+        //        await _commonRepository.RegisterException(new RegisterExceptionRequest() { ex = JsonConvert.SerializeObject(ex), method = resource, input = Body });
+        //        //#endregion
+        //        return new General<string>() { Errors = new List<string>() { ex.Message } };
+        //    }
+        //}
+
+        //[HttpPost]
+        //[Route("DescriptionValidation")]
+        //public async Task<General<string>> DescriptionValidationCommon(DescriptionValidationRequest descriptionValidation)
+        //{
+        //    try
+        //    {
+        //        return await _commonRepository.DescriptionValidation(descriptionValidation);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //#region "Sección de Error"
+        //        string resource = MethodBase.GetCurrentMethod().DeclaringType.Name.Substring(MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf("<") + 1, MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf(">") - 1);
+        //        string Body = JsonConvert.SerializeObject(descriptionValidation);
+
+        //        await _commonRepository.RegisterException(new RegisterExceptionRequest() { ex = JsonConvert.SerializeObject(ex), method = resource, input = Body });
+        //        //#endregion
+        //        return new General<string>() { Errors = new List<string>() { ex.Message } };
+        //    }
+        //}
+
+        //[HttpPost]
+        //[Authorize]
+        //[Route("DeleteObject")]
+        //public async Task<General<string>> DeleteObjectCommon(GeneralClass<object> objeto)
+        //{
+        //    try
+        //    {
+        //        return await _commonRepository.DeleteObject(objeto);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //#region "Sección de Error"
+        //        string resource = MethodBase.GetCurrentMethod().DeclaringType.Name.Substring(MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf("<") + 1, MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf(">") - 1);
+        //        string Body = JsonConvert.SerializeObject(objeto);
+
+        //        await _commonRepository.RegisterException(new RegisterExceptionRequest() { ex = JsonConvert.SerializeObject(ex), method = resource, input = Body });
+        //        //#endregion
+        //        return new General<string>() { Errors = new List<string>() { ex.Message } };
+        //    }
+        //}
+
+        //[HttpPost]
+        //[Route("GetExceptionMessage")]
+        //public async Task<General<string>> GetExceptionMessageCommon(ExceptionMessageRequest exceptionMessageRequest)
+        //{
+        //    try
+        //    {
+        //        return await _commonRepository.GetExceptionMessage(exceptionMessageRequest);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //#region "Sección de Error"
+        //        string resource = MethodBase.GetCurrentMethod().DeclaringType.Name.Substring(MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf("<") + 1, MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf(">") - 1);
+        //        string Body = JsonConvert.SerializeObject(exceptionMessageRequest);
+
+        //        await _commonRepository.RegisterException(new RegisterExceptionRequest() { ex = JsonConvert.SerializeObject(ex), method = resource, input = Body });
+        //        //#endregion
+        //        return new General<string>() { Errors = new List<string>() { ex.Message } };
+        //    }
+        //}
+
+        //[HttpPost]
+        //[Route("RegisterException")]
+        //public async Task<General<string>> RegisterExceptionCommon(RegisterExceptionRequest registerExceptionRequest)
+        //{
+        //    try
+        //    {
+        //        return await _commonRepository.RegisterException(registerExceptionRequest);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //#region "Sección de Error"
+        //        string resource = MethodBase.GetCurrentMethod().DeclaringType.Name.Substring(MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf("<") + 1, MethodBase.GetCurrentMethod().DeclaringType.Name.IndexOf(">") - 1);
+        //        string Body = JsonConvert.SerializeObject(registerExceptionRequest);
+
+        //        await _commonRepository.RegisterException(new RegisterExceptionRequest() { ex = JsonConvert.SerializeObject(ex), method = resource, input = Body });
+        //        //#endregion
+        //        return new General<string>() { Errors = new List<string>() { ex.Message } };
+        //    }
+        //}
+        
+        [HttpGet]
+        [Route("Carga_PowerBI")]
         public string Get()
         {
             try
@@ -36,6 +178,7 @@ namespace Carga_Prueba_BI.Controllers
                 throw;
             }
         }
+
         #region Extras
         static async Task carga()
         {

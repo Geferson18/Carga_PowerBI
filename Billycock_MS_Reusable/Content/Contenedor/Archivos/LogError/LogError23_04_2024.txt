@@ -1,0 +1,15 @@
+-----           -INICIO DE ERROR          ----
+Empresa                  : Billycock
+Elaborado                : Programador
+Proyecto                 : WS Billycock
+Fecha                    : martes, 23 de abril de 2024
+Hora de incidencia       : 01:48:11
+Metodo         :   DeletePlatform
+Mensaje de Error         :   Unable to cast object of type 'Billycock_MS_Platform.DTO.Common.GeneralClass`1[Billycock_MS_Platform.Models.Platform.Platform]' to type 'Billycock_MS_Platform.Models.Platform.Platform'.
+
+System.Private.CoreLib
+   at Billycock_MS_Platform.Repositories.Repositories.PlatformRepository.ObtenerParametros(String tipo, Object objeto) in E:\Billycock\Billycock_MS\Billycock_MS_Platform\Billycock_MS_Platform\Repositories\Repositories\PlatformRepository.cs:line 211
+   at Billycock_MS_Platform.Repositories.Repositories.PlatformRepository.GetPlatformAccounts(GeneralClass`1 objeto) in E:\Billycock\Billycock_MS\Billycock_MS_Platform\Billycock_MS_Platform\Repositories\Repositories\PlatformRepository.cs:line 206
+   at Billycock_MS_Platform.Repositories.Repositories.PlatformRepository.DeletePlatform(GeneralClass`1 _platform) in E:\Billycock\Billycock_MS\Billycock_MS_Platform\Billycock_MS_Platform\Repositories\Repositories\PlatformRepository.cs:line 168
+   at Billycock_MS_Platform.Controllers.PlatformController.DeletePlatform(GeneralClass`1 _platform) in E:\Billycock\Billycock_MS\Billycock_MS_Platform\Billycock_MS_Platform\Controllers\PlatformController.cs:line 197
+-----           - FIN DE ERROR           ----
