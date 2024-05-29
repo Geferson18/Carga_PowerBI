@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,42 +8,43 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using System.Data.SqlClient;
 
-namespace ConsoleApp1
+namespace Carga_Prueba_BI.Controllers
 {
-    class Program
+    [ApiController]
+    [Route("[controller]")]
+    public class PruebaController : ControllerBase
     {
-        static void Main(string[] args)
+
+        private readonly ILogger<PruebaController> _logger;
+
+        public PruebaController(ILogger<PruebaController> logger)
         {
-            // The code provided will print ‘Hello World’ to the console.
-            // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
-
-            Console.WriteLine("Hello World!");
-            carga();
-            //string databaseName = "mdb_agentes_prod";
-            //var client = new MongoClient(connectionString);
-            //var server = client.ListDatabases().ToList(); 
-                Console.ReadKey();
-
-            // Go to http://aka.ms/dotnet-get-started-console to continue learning how to build a console app! 
+            _logger = logger;
         }
-        public SqlConnection ConexionSQL()
+
+        [HttpGet(Name = "Prueba")]
+        public string Get()
         {
-            // COMERCIAL
-            SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
-            //  SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
-            //Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True   
-
-
-            return cn;
-
+            try
+            {
+                carga();
+                return "Proceso realizado correctamente";
+            }
+            catch (Exception ex)
+            {
+                return "Proceso no realizado" + Environment.NewLine + ex.Message;
+                throw;
+            }
         }
+        #region Extras
         static async Task carga()
-        {try
+        {
+            try
             {
                 string host = "35.185.84.183";
                 int puerto = 27021;
-                string username = "u_mongo_read";
-                string password = "8HfmGLspHBC7efZ7";
+                string username = "powerbi";
+                string password = "1ajDpowerbi2020";
                 string AuthmMongo = "SCRAM-SHA-1";
                 MongoInternalIdentity internalIdentity = new MongoInternalIdentity("mdb_agentes_prod", username);
                 PasswordEvidence passwordEvidence = new PasswordEvidence(password);
@@ -53,8 +55,8 @@ namespace ConsoleApp1
                 MongoServerAddress address = new MongoServerAddress(host, puerto);
                 settings.Server = address;
                 settings.ConnectTimeout = TimeSpan.FromSeconds(2000);
-                settings.ServerSelectionTimeout= TimeSpan.FromSeconds(2000);
-                settings.SocketTimeout= TimeSpan.FromSeconds(2000);
+                settings.ServerSelectionTimeout = TimeSpan.FromSeconds(2000);
+                settings.SocketTimeout = TimeSpan.FromSeconds(2000);
 
                 MongoClient client = new MongoClient(settings);
                 var database = client.GetDatabase("mdb_agentes_prod");
@@ -80,7 +82,7 @@ namespace ConsoleApp1
                 await m_truncate();
                 await m_appointmenttrackings(appointmenttrackings); // YA
                 await m_typologies(typologies);
-           //x    // await m_customers(customers); //NO
+                //x    // await m_customers(customers); //NO
                 await m_users(users); // YA
                 await m_minutes(minutes);  // YA
                 await m_projects(projects); // YA
@@ -99,7 +101,7 @@ namespace ConsoleApp1
         private static async Task m_truncate()
         {
             //COMERCIAL
-            SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
+            SqlConnection cn = new SqlConnection("Data Source=asei.database.windows.net;Initial Catalog=PowerBI_ASEI;Persist Security Info=True;User ID=aluna;Password=Server2015");
 
             // SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
 
@@ -111,7 +113,7 @@ namespace ConsoleApp1
                          "truncate table [dbo].[TMP_AGT_Historial_Minutes];" +
                           "truncate table[dbo].[TMP_AGT_Agentes];" +
                           "truncate table[dbo].[TMP_AGT_Typologies];" +
-                     //    "truncate table[dbo].[TMP_AGT_Cliente];" +
+                       //    "truncate table[dbo].[TMP_AGT_Cliente];" +
                        "truncate table[dbo].[TMP_AGT_Historial_Citas]; " +
                          "truncate table[dbo].[TMP_AGT_Minutes];" +
                          "truncate table[dbo].[TMP_AGT_Builder];" +
@@ -146,7 +148,7 @@ namespace ConsoleApp1
 
 
                         // COMERCIAL
-                        SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
+                        SqlConnection cn = new SqlConnection("Data Source=asei.database.windows.net;Initial Catalog=PowerBI_ASEI;Persist Security Info=True;User ID=aluna;Password=Server2015");
 
                         //  SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
 
@@ -220,7 +222,7 @@ namespace ConsoleApp1
 
                         Console.WriteLine(document["_id"].ToString());
                         // COMERCIAL
-                        SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
+                        SqlConnection cn = new SqlConnection("Data Source=asei.database.windows.net;Initial Catalog=PowerBI_ASEI;Persist Security Info=True;User ID=aluna;Password=Server2015");
 
                         //SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
 
@@ -295,7 +297,7 @@ namespace ConsoleApp1
                 }
 
                 // COMERCIAL
-                SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
+                SqlConnection cn = new SqlConnection("Data Source=asei.database.windows.net;Initial Catalog=PowerBI_ASEI;Persist Security Info=True;User ID=aluna;Password=Server2015");
 
                 // SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
 
@@ -349,7 +351,7 @@ namespace ConsoleApp1
                     foreach (BsonDocument document in batch)
                     {
                         // COMERCIAL
-                        SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
+                        SqlConnection cn = new SqlConnection("Data Source=asei.database.windows.net;Initial Catalog=PowerBI_ASEI;Persist Security Info=True;User ID=aluna;Password=Server2015");
 
                         // SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
 
@@ -389,7 +391,7 @@ namespace ConsoleApp1
                     foreach (BsonDocument document in batch)
                     {
                         // Conexion a ASEI COMERCIAL
-                        SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
+                        SqlConnection cn = new SqlConnection("Data Source=asei.database.windows.net;Initial Catalog=PowerBI_ASEI;Persist Security Info=True;User ID=aluna;Password=Server2015");
 
                         // SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
 
@@ -429,7 +431,7 @@ namespace ConsoleApp1
                     foreach (BsonDocument document in batch)
                     {
                         // COMERCIAL
-                        SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
+                        SqlConnection cn = new SqlConnection("Data Source=asei.database.windows.net;Initial Catalog=PowerBI_ASEI;Persist Security Info=True;User ID=aluna;Password=Server2015");
 
                         // SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
 
@@ -526,7 +528,7 @@ namespace ConsoleApp1
                     foreach (BsonDocument document in batch)
                     {
                         // COMERCIAL
-                        SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
+                        SqlConnection cn = new SqlConnection("Data Source=asei.database.windows.net;Initial Catalog=PowerBI_ASEI;Persist Security Info=True;User ID=aluna;Password=Server2015");
 
                         //   SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
 
@@ -575,13 +577,13 @@ namespace ConsoleApp1
                             + document["number_total_lifts"].ToInt32() + ","
 
                             + document["visibility_nexo"].ToInt32() + ","
-                           
+
                             + (document["id_bank"].IsBsonNull ? 0 : document["id_bank"].ToInt32()) + ","
 
                             + (document["id_bank_type"].IsBsonNull ? 0 : document["id_bank_type"].ToInt32()) + ","
                             + document["solicita_dni"].ToInt32() + ","
                             + document["PIActivoProyecto"].ToInt32() + ",'"
-                         
+
                             + document["mongo_builderId"].ToString() + "','"
 
                             + document["mongo_builderId"].ToString() + "',"
@@ -620,7 +622,7 @@ namespace ConsoleApp1
                     foreach (BsonDocument document in batch)
                     {
                         // COMERCIAL
-                        SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
+                        SqlConnection cn = new SqlConnection("Data Source=asei.database.windows.net;Initial Catalog=PowerBI_ASEI;Persist Security Info=True;User ID=aluna;Password=Server2015");
 
 
                         // SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
@@ -663,58 +665,58 @@ namespace ConsoleApp1
         {
             /*using (IAsyncCursor<BsonDocument> cursor = await properties.FindAsync(new BsonDocument()))
             {*/
-               // var i = 0;
+            // var i = 0;
             var filtro = Builders<BsonDocument>.Filter.Empty;
             var resultado = properties.Find<BsonDocument>(filtro).ToList();
-                foreach (BsonDocument document in resultado)
+            foreach (BsonDocument document in resultado)
+            {
+                // COMERCIAL
+                SqlConnection cn = new SqlConnection("Data Source=asei.database.windows.net;Initial Catalog=PowerBI_ASEI;Persist Security Info=True;User ID=aluna;Password=Server2015");
+
+                // SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
+                // ,[mongo_project] ,[mongo_TypologyId]
+                try
                 {
-                    // COMERCIAL
-                    SqlConnection cn = new SqlConnection("Data Source=DESKTOP-F99ED24;Initial Catalog=PowerBI_ASEI;Integrated Security=True;Trust Server Certificate=True");
+                    //  i += 1;
+                    Console.WriteLine(document["_id"].ToString());
+                    //Console.WriteLine(i.ToString());
+                    string SqlString = "INSERT INTO [dbo].[TMP_AGT_Properties_m]([id],[current_comision],[property_id] ,[typology_id] ,[propety_Name],[type_currency],[price],[status_value] ,[is_sold]   ,[price_PEN],[price_USD] ,[CreatedAt])" +
 
-                    // SqlConnection cn = new SqlConnection("Data Source=aseiagentes.database.windows.net;Initial Catalog=PowerBIAgentes_ASEI;Persist Security Info=True;User ID=aseiagentes;Password=Server2021$");
-                    // ,[mongo_project] ,[mongo_TypologyId]
-                    try
+                    "VALUES ('" + document["_id"].ToString() + "',"
+                     + (document["currentComision"].IsBsonNull ? 0 : document["currentComision"].ToInt32()) + ",'"
+                    + document["property_id"].ToString() + "','"
+                    + document["typology_id"].ToString() + "','"
+                    + document["name"].ToString() + "',"
+                    + document["type_currency"].ToInt32() + ","
+                    + document["price"].ToInt32() + ","
+                    + document["status_value"].ToInt32() + ","
+                    + (document["is_sold"].IsBsonNull ? 0 : document["is_sold"].ToInt32()) + ","
+
+
+
+
+                    //  + document["mongo_Project"].ToString().Replace("'", "") + "','"
+
+                    //  + document["mongo_typologyId"].ToString().Replace("'", "") + "','"
+
+                    + (document["pricePEN"].IsBsonNull ? 0 : document["pricePEN"].ToInt32()) + ","
+                    + (document["priceUSD"].IsBsonNull ? 0 : document["priceUSD"].ToInt32()) + ",'"
+                    + (document["date_create"].ToLocalTime().ToString("yyyy-MM-dd")) + "')";
+
+
+                    using (SqlCommand cmd = new SqlCommand(SqlString, cn))
                     {
-                      //  i += 1;
-                        Console.WriteLine(document["_id"].ToString());
-                        //Console.WriteLine(i.ToString());
-                        string SqlString = "INSERT INTO [dbo].[TMP_AGT_Properties_m]([id],[current_comision],[property_id] ,[typology_id] ,[propety_Name],[type_currency],[price],[status_value] ,[is_sold]   ,[price_PEN],[price_USD] ,[CreatedAt])" +
+                        cn.Open();
+                        cmd.ExecuteNonQuery();
+                        cn.Close();
 
-                        "VALUES ('" + document["_id"].ToString() + "',"
-                         + (document["currentComision"].IsBsonNull ? 0 : document["currentComision"].ToInt32()) + ",'"
-                        + document["property_id"].ToString() + "','"
-                        + document["typology_id"].ToString() + "','"
-                        + document["name"].ToString() + "',"
-                        + document["type_currency"].ToInt32() + ","
-                        + document["price"].ToInt32() + ","
-                        + document["status_value"].ToInt32() + ","
-                        + (document["is_sold"].IsBsonNull ? 0 : document["is_sold"].ToInt32()) + ","
-
-
-
-
-                        //  + document["mongo_Project"].ToString().Replace("'", "") + "','"
-
-                        //  + document["mongo_typologyId"].ToString().Replace("'", "") + "','"
-
-                        + (document["pricePEN"].IsBsonNull ? 0 : document["pricePEN"].ToInt32()) + ","
-                        + (document["priceUSD"].IsBsonNull ? 0 : document["priceUSD"].ToInt32()) + ",'"
-                        + (document["date_create"].ToLocalTime().ToString("yyyy-MM-dd")) + "')";
-
-
-                        using (SqlCommand cmd = new SqlCommand(SqlString, cn))
-                        {
-                            cn.Open();
-                            cmd.ExecuteNonQuery();
-                            cn.Close();
-
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.ToString());
                     }
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+            }
 
             /*    var i = 0;
             while (await cursor.MoveNextAsync())
@@ -772,5 +774,6 @@ namespace ConsoleApp1
             }
         }*/
         }
+        #endregion
     }
 }
